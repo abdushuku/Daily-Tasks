@@ -1,0 +1,222 @@
+{
+  "openapi" : "3.0.0",
+  "info" : {
+    "title" : "Sign Up Router",
+    "version" : "0.0.2"
+  },
+  "servers" : [ {
+    "url" : "http://localhost:3000",
+    "description" : "Main API"
+  }, {
+    "url" : "http://localhost:3000/user/signup",
+    "description" : "New users must register and verify their email address"
+  }, {
+    "url" : "http://localhost:3000/verification/{token}",
+    "description" : "after user click a veirifcation button in your email message redirect this router"
+  }, {
+    "url" : "http://localhost:3000/tasks/get/task",
+    "description" : "You can get all current user's tasks there have a special logic for getting the current user. User's name contained in cookie user_name"
+  }, {
+    "url" : "http://localhost:3000/tasks/add/task",
+    "description" : "This router gives access for adding a new task"
+  }, {
+    "url" : "http://localhost:3000/tasks/update/task/{id}",
+    "description" : "Update tasks router"
+  }, {
+    "url" : "http://localhost:3000/tasks/delete/task/{id}",
+    "description" : "Delete user tasks from task's id"
+  } ],
+  "paths" : {
+    "/user/signup" : {
+      "post" : {
+        "summary" : "Register and login user and verify email address",
+        "description" : "New users must register and verify their email address",
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/user_signup_body"
+              }
+            }
+          },
+          "required" : true
+        },
+        "responses" : {
+          "200" : {
+            "description" : "We are sending a verification message to your email address"
+          },
+          "500" : {
+            "description" : "Error occurring while inserting data"
+          }
+        }
+      }
+    },
+    "/veirifation/{token}" : {
+      "get" : {
+        "summary" : "veirifation router",
+        "description" : "after user click a veirifcation button in your email message redirect this router",
+        "parameters" : [ {
+          "name" : "token",
+          "in" : "path",
+          "description" : "user's uniqe token",
+          "required" : true,
+          "style" : "simple",
+          "explode" : false,
+          "schema" : {
+            "type" : "string"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Email verified successfully"
+          },
+          "404" : {
+            "description" : "User not found"
+          },
+          "500" : {
+            "description" : "Error during email verification"
+          }
+        }
+      }
+    },
+    "/tasks/get/task" : {
+      "get" : {
+        "summary" : "Get current user's tasks",
+        "description" : "Retrieve tasks for the current user based on the user's name stored in a cookie.",
+        "parameters" : [ {
+          "name" : "user_name",
+          "in" : "cookie",
+          "required" : true,
+          "style" : "form",
+          "explode" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Successful response"
+          }
+        }
+      }
+    },
+    "/tasks/add/task" : {
+      "post" : {
+        "summary" : "Post new task",
+        "description" : "Access for adding tasks",
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/add_task_body"
+              }
+            }
+          },
+          "required" : true
+        },
+        "responses" : {
+          "200" : {
+            "description" : "Task inserted successfully"
+          },
+          "500" : {
+            "description" : "Error occurring while inserting object"
+          }
+        }
+      }
+    },
+    "/tasks/update/task/{id}" : {
+      "put" : {
+        "summary" : "Update tasks router",
+        "description" : "This router to do update tasks according to task's id",
+        "parameters" : [ {
+          "name" : "id",
+          "in" : "path",
+          "description" : "ID of the task to update",
+          "required" : true,
+          "style" : "simple",
+          "explode" : false,
+          "schema" : {
+            "type" : "string"
+          }
+        } ],
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/task_id_body"
+              }
+            }
+          },
+          "required" : true
+        },
+        "responses" : {
+          "200" : {
+            "description" : "Update tasks successfully"
+          },
+          "500" : {
+            "description" : "Wrong on update router"
+          }
+        }
+      }
+    },
+    "/tasks/delete/task/{id}" : {
+      "delete" : {
+        "summary" : "delete tasks",
+        "description" : "Delete user tasks from task's id",
+        "parameters" : [ {
+          "name" : "id",
+          "in" : "path",
+          "required" : true,
+          "style" : "simple",
+          "explode" : false,
+          "schema" : {
+            "type" : "string"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "task deleted"
+          },
+          "500" : {
+            "description" : "worng on delete router"
+          }
+        }
+      }
+    }
+  },
+  "components" : {
+    "schemas" : {
+      "user_signup_body" : {
+        "type" : "object",
+        "properties" : {
+          "username" : {
+            "type" : "string"
+          },
+          "email" : {
+            "type" : "string"
+          }
+        }
+      },
+      "add_task_body" : {
+        "type" : "object",
+        "properties" : {
+          "description" : {
+            "type" : "string"
+          }
+        }
+      },
+      "task_id_body" : {
+        "type" : "object",
+        "properties" : {
+          "description" : {
+            "type" : "string"
+          },
+          "task_date" : {
+            "type" : "string",
+            "format" : "date"
+          }
+        }
+      }
+    }
+  }
+}
